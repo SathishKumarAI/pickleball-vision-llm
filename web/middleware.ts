@@ -1,13 +1,18 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { LOCAL_PREVIEW, SUPABASE_ANON_KEY, SUPABASE_URL } from "@/lib/env";
 
 /** Refresh the Supabase session cookie on every request (keeps SSR auth valid). */
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
 
+  // Local preview has no Supabase project, so there is no session to refresh.
+  // Without this guard every request throws before reaching a page.
+  if (LOCAL_PREVIEW) return response;
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY,
     {
       cookies: {
         getAll() {

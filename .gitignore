@@ -14,8 +14,8 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+/lib/
+/lib64/
 parts/
 sdist/
 var/
@@ -194,7 +194,6 @@ logs/
 *.avi
 *.jpg
 *.png
-*.json
 *.csv
 *.pkl
 *.pt
@@ -234,3 +233,13 @@ web/.env.local
 _quarantine/
 mlruns/
 *.tsbuildinfo
+
+# --- json: ignore data dumps, never config manifests ---
+# A blanket `*.json` here silently ignored web/package.json, web/tsconfig.json and
+# the whole of web/lib/ (via the Python `lib/` pattern above). The frontend was
+# unrunnable from a fresh clone for months and the build still looked green on the
+# machine where the untracked files happened to exist. Scope both patterns instead.
+data/**/*.json
+outputs/**/*.json
+output_frames/**/*.json
+mlruns/**/*.json
