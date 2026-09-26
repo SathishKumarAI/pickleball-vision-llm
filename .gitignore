@@ -243,3 +243,10 @@ data/**/*.json
 outputs/**/*.json
 output_frames/**/*.json
 mlruns/**/*.json
+
+# --- credentials: the file itself and every copy of it ---
+.demo-credentials.txt
+.demo-credentials.txt.*
+*.credentials.txt
+web/.env.local
+.env.local

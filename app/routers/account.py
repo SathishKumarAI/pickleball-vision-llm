@@ -21,7 +21,8 @@ def usage(user=Depends(get_current_user), repo: Repo = Depends(get_repo),
     sub = repo.get_subscription(user["id"])
     used = repo.get_usage(user["id"], period)
     q = check_quota(sub["plan"], used["videos_processed"], settings)
-    return {"plan": sub["plan"], "period": period,
+    # q.plan, not sub["plan"] — local mode reports "local", not the stored row.
+    return {"plan": q.plan, "period": period,
             "videos_used": q.used, "videos_limit": q.limit, "remaining": q.remaining,
             "seconds_processed": used["seconds_processed"]}
 

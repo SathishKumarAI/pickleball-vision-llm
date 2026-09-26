@@ -29,7 +29,7 @@ The one blocker. The control plane has only ever been tested against a stub proc
 
 | id | Item | Done when |
 |---|---|---|
-| M0-0 | Make this machine a working dev box | `python -m pytest -q` collects and passes. Today it fails at collection: `No module named 'jwt'`, `No module named 'pickleball_vision'` — deps missing and the package not installed editable. The "52 pytest green" on record was measured on the Linux box |
+| M0-0 | Make this machine a working dev box | ✅ **done 2026-09-26.** `pip install -e .` + `npm install`. `python -m pytest tests -q` → 61 passed, 1 failed (`test_sklearn_model_head`, needs the `[vision]` extra), 1 skipped. Bare `pytest` still dies collecting `scripts/tests`, which imports the deleted `pickleball_vision` package — filed as `P7` |
 | M0-1 | Install the Blackwell-safe stack | `python -c "import torch;print(torch.cuda.is_available(), torch.cuda.get_device_name(0))"` prints `True NVIDIA GeForce RTX 5070 Ti`. `torch>=2.7.0+cu128` installed **before** ultralytics |
 | M0-2 | One real clip end-to-end | a 60 s clip goes file → `Pipeline.process_video` → annotated mp4 that a human watches and confirms tracks the ball |
 | M0-3 | Record the numbers | `docs/thinking/M0-seam-results.md` holds per-stage wall-clock, peak VRAM per stage, and cold-start cost. PRD §5 latency targets updated from measurement |
@@ -39,11 +39,11 @@ The one blocker. The control plane has only ever been tested against a stub proc
 
 | id | Item | Done when | Dep |
 |---|---|---|---|
-| L1 | Explicit `PVL_MODE` selection | `PVL_MODE=local` and `managed` both boot; an unset/invalid value **fails at startup with a clear message**; `Fake*` unreachable outside tests | — |
+| L1 | Explicit `PVL_MODE` selection | 🟡 **partial 2026-09-26.** `PVL_MODE` exists in `app/config.py`, validated, invalid values raise. Still to do: the flag must also pick the repo/dispatch/storage trio (today those are still inferred from whether Supabase is configured) and make `Fake*` unreachable outside tests | — |
 | L2 | `SqliteRepo` | passes the same `Repo` contract tests as `InMemoryRepo`; `data/analyses.db` openable in any SQL tool | L1 |
 | L3 | `LocalStorage` | file round-trips; local signed URL serves the video to the existing player component unchanged | L1 |
 | L4 | `LocalDispatcher` (subprocess) | stub job runs to completion with progress visible in the UI; `cancel()` kills the process, job lands in `error`/`cancelled`, no orphan | L1 |
-| L5 | Auth bypass in local mode | every app route reachable with no token; **bound to localhost**; a test asserts managed mode still rejects an unauthenticated call | L1 |
+| L5 | Auth bypass in local mode | ✅ **done 2026-09-26.** `get_current_user` returns `LOCAL_USER` in local mode; quota exempt at `check_quota`; `tests/test_local_mode.py` (9 tests) asserts both directions — local serves without a token, managed still 401s. Still to do: **bind to localhost** rather than relying on the default host |
 | L6 | No-egress guarantee | a test asserts **zero outbound sockets** during a local analysis. This is a headline product claim — it gets a test, not a paragraph | L1–L4 |
 | L7 | `pvl analyze <file>` CLI | one command, no server, writes annotated video + report + db row | L2–L4 |
 | L8 | Route-parity test | both modes expose the same route set minus the documented exclusions (billing/quota/admin local, youtube managed) | L1 |
@@ -127,6 +127,8 @@ Per `docs/UI_COMPONENTS.md`. Reuses `DESIGN.md` tokens; no new design system.
 | P4 | DUPR/VAIR-compatible export | stat feed export without sending video anywhere |
 | P5 | Trend view | multiple sessions for a self-declared player. **No face matching** (PRD §4) |
 | P6 | Doc-truth check | no doc claims a model choice that `MODELS_AND_REUSE.md` contradicts |
+| P7 | Delete or fix `scripts/tests` | bare `python -m pytest` collects cleanly. It currently imports `pickleball_vision`, a package the reorg deleted, so collection dies before any test runs |
+| P8 | Rotate the burned demo passwords | three demo passwords were committed in plaintext and remain in git history. `scripts/seed_demo_users.py` now generates them into a gitignored file; if those accounts are ever created in a real project, the old values must not be reused |
 
 ## Epic R — Open-source release
 

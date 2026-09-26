@@ -21,8 +21,21 @@ Written this session, not yet implemented in code:
 | [`docs/inspiration/oss-prior-art-2026-09.md`](docs/inspiration/oss-prior-art-2026-09.md) | measured OSS survey; moved 5 model choices |
 | [`docs/inspiration/competitive-landscape-2026-09.md`](docs/inspiration/competitive-landscape-2026-09.md) | competitor feature matrix, pricing, patent + ToS boundaries |
 
-**No product code was written.** The spec is awaiting review; implementation starts after
-an implementation plan exists.
+The spec is still awaiting review. Code written since, in two commits, both narrower than
+the RFC: restoring the frontend files `.gitignore` had swallowed, and the `PVL_MODE=local`
+auth/quota bypass needed to view the UI at all.
+
+## What runs on this machine today
+
+```bash
+cd web && npm run dev                                   # http://localhost:3000
+PVL_MODE=local python -m uvicorn app.main:app --port 8000   # the API, no auth
+```
+
+Local mode (`PVL_MODE=local`) is partially real as of 2026-09-26: auth is bypassed,
+quota is exempt, and the frontend runs with no Supabase project. Still **not** built:
+`SqliteRepo`, `LocalStorage`, `LocalDispatcher` (backlog L2–L4), so jobs are held in
+memory and nothing reaches a GPU.
 
 ## Next action
 
@@ -46,12 +59,12 @@ eval set, before any accuracy claim).
 - **Don't `next build` while the dev server runs** on the same `.next` — it corrupts chunks.
   Dev: `cd web && ./node_modules/.bin/next dev -p 3000`.
 - **Windows + Git Bash here**, not Linux; earlier docs assume Linux paths.
-- **The test suite does not run on this machine yet.** `python -m pytest -q` fails at
-  collection with `ModuleNotFoundError: No module named 'jwt'` and `No module named
-  'pickleball_vision'` — deps are not installed and the package is not installed editable.
-  Fix before trusting any "tests green" claim here: `pip install -e ".[dev]"` (see
-  `docs/GETTING_STARTED.md`). The "52 pytest green" in `docs/STATUS.md` was measured on the
-  Linux box, not this one. Backlog `M0-0`.
+- **Run `pytest tests`, not bare `pytest`.** `scripts/tests` imports
+  `pickleball_vision`, a package the reorg deleted, and kills collection for the whole
+  run. `python -m pytest tests -q` gives 61 passed, 1 failed, 1 skipped — the failure is
+  `test_sklearn_model_head`, which needs scikit-learn from the `[vision]` extra.
+- **Control-plane deps are installed now** (`pip install -e .`), and the API runs here.
+  The frontend's `npm install` is done too.
 - `pyproject.toml` declares MIT but **there is no `LICENSE` file** — blocking for an
   open-source release (backlog `R1`).
 

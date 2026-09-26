@@ -6,7 +6,7 @@ from typing import Any, Dict, Optional
 
 from fastapi import Depends, Header, HTTPException, status
 
-from app.config import Settings, get_settings
+from app.config import LOCAL_USER, Settings, get_settings
 from app.security.jwt import InvalidToken, claims_to_user, verify_supabase_jwt
 from app.services.dispatch import Dispatcher, FakeDispatcher, ModalDispatcher
 from app.services.repo import InMemoryRepo, Repo, SupabaseRepo
@@ -61,7 +61,14 @@ def get_current_user(
     authorization: Optional[str] = Header(None),
     settings: Settings = Depends(get_settings),
 ) -> Dict[str, Any]:
-    """Verify the Supabase JWT and return the current user. 401 if missing/invalid."""
+    """Verify the Supabase JWT and return the current user. 401 if missing/invalid.
+
+    In local mode there is no auth server and exactly one user, so the check is
+    skipped (RFC-004 L5). Managed mode is unchanged.
+    """
+    if settings.is_local_mode:
+        return dict(LOCAL_USER)
+
     token = _bearer(authorization)
     if not token:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "authentication required")

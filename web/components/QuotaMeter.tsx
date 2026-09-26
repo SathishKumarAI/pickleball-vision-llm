@@ -14,6 +14,19 @@ export default function QuotaMeter() {
 
   if (!q) return <div className="skeleton h-[68px] w-full rounded-xl" />;
 
+  // Local mode has no cap (limit -1): show what was analysed, no meter, no upsell.
+  if (q.videos_limit < 0) {
+    return (
+      <div className="panel p-5">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium">Local — unlimited</span>
+          <span className="font-mono text-xs text-ink/55">{q.videos_used} analysed this month</span>
+        </div>
+        <p className="mt-2 text-xs text-ink/55">Analysis runs on this machine. No quota, no billing.</p>
+      </div>
+    );
+  }
+
   const pct = q.videos_limit ? Math.min(100, (q.videos_used / q.videos_limit) * 100) : 0;
   const low = q.remaining <= 1;
   return (
