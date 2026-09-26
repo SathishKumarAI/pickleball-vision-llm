@@ -3,6 +3,17 @@
 > Web research backing the PRD/RFC, organized by topic with source links for
 > future reading. Captured 2026-06-07. Findings are summaries — follow links for
 > detail; verify pricing/SOTA before committing.
+>
+> **⚠️ Partially superseded 2026-09-26.** §5 (ball tracking), §6 (pretrained detectors) and
+> §8 (market / prior art) are out of date — a fresh survey moved the ball backend to
+> WASB-SBDT and the tracker to `roboflow/trackers`, and found two projects already building
+> a local-first pickleball analyzer. Read these instead:
+> - `docs/inspiration/oss-prior-art-2026-09.md` — models, repos, datasets, measured numbers
+> - `docs/inspiration/competitive-landscape-2026-09.md` — commercial products, feature
+>   matrix, legal boundaries
+>
+> §1–§4 and §7 (doc templates, homography, action recognition, tracking theory, AWS async)
+> still hold.
 
 ---
 

@@ -1,10 +1,38 @@
 # 🔁 Reuse Map — OSS Models & Repos (don't reinvent)
 
-> Curated 2026-06-07. Pretrained models + libraries to plug into each pipeline
-> stage instead of writing from scratch. Pick weights here, then set
-> `Config.DETECTOR_MODEL` / tracker backend — no new model code needed.
+> Curated 2026-06-07, **stage choices revised 2026-09-26** after a fresh survey
+> (`docs/inspiration/oss-prior-art-2026-09.md`). Pretrained models + libraries to plug into
+> each pipeline stage instead of writing from scratch.
+
+## Current choice per stage (this table wins if anything below disagrees)
+
+| Stage | Choice | Licence | Why, with the number |
+|---|---|---|---|
+| Detector | Ultralytics YOLO + pickleball weights | AGPL (Ultralytics) / per-dataset | existing `get_detector()` factory; Roboflow pickleball sets are 100–120 images, so expect fine-tuning |
+| **Ball** | **[WASB-SBDT](https://github.com/nttcom/WASB-SBDT)** | **MIT** | tennis F1 **95.6** / badminton 93.1 (τ=4px), validated across 5 sports; beats MonoTrack by 7.8–16.8% AP. TrackNetV3's 97.5% is badminton-only on a torch-1.10 stack. `pickleball-ai` already bootstraps pickleball from these weights |
+| **Tracking** | **[roboflow/trackers](https://github.com/roboflow/trackers)** ByteTrack | **Apache 2.0** | maintained, benchmarked on SportsMOT/SoccerNet, detector-agnostic, `supervision`-native. BoT-SORT + ReID kept **only** for the same-kit doubles case |
+| **Court** | **[TennisCourtDetector](https://github.com/yastrebksv/TennisCourtDetector)** pattern, retrained on pickleball geometry | check repo | **1.83px** median keypoint error with refinement + homography; weights published |
+| **Pose** | **ViTPose-L** (RTMPose as CPU fallback) | per-model | 78.3 AP COCO; chosen by PadelTracker100 after a SOTA comparison on padel — the closest sport analog |
+| **Coach LLM** | **Qwen3-VL-8B Q4** local, as a 4th adapter beside `rule`/`hf`/`cloud` | Apache 2.0 | ~6–8 GB VRAM, fits 16 GB beside the vision stack |
+| Glue | [supervision](https://github.com/roboflow/supervision), [roboflow/sports](https://github.com/roboflow/sports) | MIT | annotators, zones, perspective transform. Don't hand-roll these |
+
+**Before installing anything on a Blackwell card (RTX 50-series, `sm_120`):**
+
+```
+pip install torch --index-url https://download.pytorch.org/whl/cu128   # BEFORE ultralytics
+```
+
+Ultralytics' default install pulls an older torch without `sm_120` kernels and fails with
+`no kernel image is available for execution on the device`
+([ultralytics#21162](https://github.com/ultralytics/ultralytics/issues/21162)). Never
+`pip install -r` the TrackNet-lineage requirements verbatim — they pin torch 1.10.
+
+**VRAM:** detector + pose + ball + an 8B VLM do not comfortably co-reside in 16 GB. Stages
+load, run and release in sequence, LLM last. Measure this at M0 (`docs/BACKLOG.md` M0-4).
 
 ---
+
+## Background detail (2026-06-07 survey — superseded where it conflicts with the table above)
 
 ## Detection — pretrained pickleball weights (Ultralytics-compatible)
 

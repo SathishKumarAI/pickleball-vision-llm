@@ -14,6 +14,7 @@ new ADR that supersedes the old one (don't rewrite history).
 | [0005](0005-managed-stack.md) | Managed stack (Modal + Supabase + Next.js) over self-managed AWS | Accepted |
 | [0006](0006-fastapi-over-flask.md) | FastAPI for the API (supersedes 0001) | Accepted |
 | [0007](0007-direct-to-storage-upload.md) | Browser uploads direct to Supabase Storage | Accepted |
+| [0008](0008-dual-mode-local-and-managed.md) | Dual mode — local-first open source alongside the managed stack (amends 0005, extends 0007) | Accepted |
 
 ## Conventions
 - File: `NNNN-kebab-title.md`. Status: Proposed / Accepted / Superseded / Deprecated.
