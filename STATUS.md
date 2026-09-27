@@ -1,6 +1,7 @@
 # STATUS — where this stopped, what to do next
 
-> Written 2026-09-26. Re-entry context. Full build-state handoff:
+> Written 2026-09-27 (session 2026-09-26 → 09-27). Re-entry context. Session narrative:
+> [`docs/WORKLOG.md`](docs/WORKLOG.md). Earlier build-state handoff:
 > [`docs/STATUS.md`](docs/STATUS.md). The queue: [`docs/BACKLOG.md`](docs/BACKLOG.md).
 
 ## Where we stopped
@@ -21,16 +22,20 @@ Written this session, not yet implemented in code:
 | [`docs/inspiration/oss-prior-art-2026-09.md`](docs/inspiration/oss-prior-art-2026-09.md) | measured OSS survey; moved 5 model choices |
 | [`docs/inspiration/competitive-landscape-2026-09.md`](docs/inspiration/competitive-landscape-2026-09.md) | competitor feature matrix, pricing, patent + ToS boundaries |
 
-The spec is still awaiting review. Code written since, in two commits, both narrower than
-the RFC: restoring the frontend files `.gitignore` had swallowed, and the `PVL_MODE=local`
-auth/quota bypass needed to view the UI at all.
+The spec is still awaiting review. Code written since, in three commits, all narrower than
+the RFC: restoring the frontend files `.gitignore` had swallowed, the `PVL_MODE=local`
+auth/quota bypass needed to view the UI at all, and a one-command start script. Plus the
+demo-password fix. Five commits total on `docs/local-first-dual-mode-prd`, unmerged.
 
 ## What runs on this machine today
 
 ```bash
-cd web && npm run dev                                   # http://localhost:3000
-PVL_MODE=local python -m uvicorn app.main:app --port 8000   # the API, no auth
+bash scripts/dev-local.sh      # starts both; Ctrl-C stops both
 ```
+
+Frontend on `:3000`, API on `:8000` with `PVL_MODE=local`. First time only:
+`pip install -e .` and `cd web && npm install`. Details and troubleshooting in
+[`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md) §2a.
 
 Local mode (`PVL_MODE=local`) is partially real as of 2026-09-26: auth is bypassed,
 quota is exempt, and the frontend runs with no Supabase project. Still **not** built:
