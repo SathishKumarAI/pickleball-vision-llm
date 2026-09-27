@@ -11,12 +11,14 @@
 | What are we building and for whom? | [`specs/PRD-pickleball-vision.md`](specs/PRD-pickleball-vision.md) (v2 — local-first + managed) |
 | How does local mode work, and why dual mode? | [`specs/RFC-004-local-first-dual-mode.md`](specs/RFC-004-local-first-dual-mode.md) · [`adr/0008`](adr/0008-dual-mode-local-and-managed.md) |
 | What is next, and what counts as done? | [`BACKLOG.md`](BACKLOG.md) |
-| Where did we stop, what are the traps? | [`STATUS.md`](STATUS.md) |
+| Where did we stop, what are the traps? | [`STATUS.md`](STATUS.md) (repo root `STATUS.md` is the current one) |
+| Why is it the way it is — session by session? | [`WORKLOG.md`](WORKLOG.md) |
 | Which model for which pipeline stage? | [`MODELS_AND_REUSE.md`](MODELS_AND_REUSE.md) |
 | What does the OSS field already solve? | [`inspiration/oss-prior-art-2026-09.md`](inspiration/oss-prior-art-2026-09.md) |
 | What do the commercial products do, and what may we not copy? | [`inspiration/competitive-landscape-2026-09.md`](inspiration/competitive-landscape-2026-09.md) · [`inspiration/pb-vision/`](inspiration/pb-vision/) |
 | Which UI components exist, which are missing? | [`UI_COMPONENTS.md`](UI_COMPONENTS.md) |
-| How do I run this? | [`GETTING_STARTED.md`](GETTING_STARTED.md) · [`SETUP.md`](SETUP.md) |
+| How do I run this locally? | [`GETTING_STARTED.md`](GETTING_STARTED.md) §2a — `bash scripts/dev-local.sh` |
+| How do I run the cloud track? | [`GETTING_STARTED.md`](GETTING_STARTED.md) · [`SETUP.md`](SETUP.md) |
 | How is the system shaped? | [`ARCHITECTURE.md`](ARCHITECTURE.md) · [`specs/RFC-001-video-analysis-pipeline.md`](specs/RFC-001-video-analysis-pipeline.md) |
 | Why is it built this way? | [`adr/`](adr/README.md) — decisions 0001–0008 |
 | What does it cost to run hosted? | [`BUDGET_PLAN.md`](BUDGET_PLAN.md) · [`INFRA_SCALING.md`](INFRA_SCALING.md) |

@@ -81,6 +81,7 @@ fine-tuned weights can be published given source datasets' CC BY 4.0 terms.
 
 ## How to resume
 
-Read this, then `docs/BACKLOG.md`. For a feature, use the **ship-feature** skill. Verify
-offline first — `pytest` for the control plane and `npm run build` in `web/` both run
-without a GPU.
+Read this, then `docs/BACKLOG.md`, then `docs/WORKLOG.md` for why things are the way they
+are. For a feature, use the **ship-feature** skill. Verify offline first — `python -m
+pytest tests` (not bare `pytest`, see the trap above) and `npx tsc --noEmit` in `web/`
+both run without a GPU.
