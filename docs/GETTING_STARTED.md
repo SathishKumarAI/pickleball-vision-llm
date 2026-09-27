@@ -29,6 +29,59 @@
 
 ---
 
+## 2a. Local mode — run the whole app on your own machine
+
+No cloud account, no login, no quota. One command:
+
+```bash
+bash scripts/dev-local.sh      # Git Bash on Windows, or any POSIX shell
+```
+
+Then open <http://localhost:3000>. It starts the FastAPI control plane on `:8000`
+with `PVL_MODE=local` (auth bypassed, `LOCAL_USER`, quota exempt) and the Next.js
+frontend on `:3000`, waits for the API to answer before starting the frontend, and
+stops both on Ctrl-C. Override ports with `API_PORT` / `WEB_PORT`.
+
+First time only:
+
+```bash
+pip install -e .          # control-plane deps (light — no torch)
+cd web && npm install     # 116 packages
+```
+
+**Manual, if you prefer two terminals** (or you are in PowerShell, where the script
+does not run):
+
+```powershell
+$env:PVL_MODE="local"; python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+cd web; npm run dev
+```
+
+### What works in local mode today, and what does not
+
+| Works | Not yet |
+|---|---|
+| Every page renders; no login | **Upload** — needs `LocalStorage` (backlog L3) |
+| API answers with no token: `/auth/me`, `/jobs`, `/account/usage` | **Analysis** — needs `LocalDispatcher` + GPU (L4, M0) |
+| Unlimited quota, no billing surfaces | **Persistence** — jobs are in memory until `SqliteRepo` (L2) |
+| Job progress polls over HTTP (no Supabase Realtime needed) | YouTube ingest (I1) |
+
+So: the UI is fully browsable and the API is live, but you cannot yet put a video
+through it. Lists are genuinely empty rather than broken. Closing that gap is `M0`
+then `L2`–`L4` in [`BACKLOG.md`](BACKLOG.md).
+
+### Troubleshooting
+
+| Symptom | Cause / fix |
+|---|---|
+| `port 8000 is already in use` | another instance is running; stop it or set `API_PORT` |
+| `control-plane deps missing` | `pip install -e .` |
+| `frontend deps missing` | `cd web && npm install` |
+| Bare `pytest` dies collecting | run `python -m pytest tests` — `scripts/tests` imports the deleted `pickleball_vision` package (backlog P7) |
+| Sign-in says local preview | expected: there is no auth server. Go straight to `/dashboard` |
+
+---
+
 ## 3. Offline track (no cloud/GPU) — start here
 Verifies the API, jobs control plane, billing logic, analytics, logging, and the
 frontend UI. Real video inference is the only thing not exercised.

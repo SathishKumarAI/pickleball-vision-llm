@@ -47,7 +47,7 @@ The one blocker. The control plane has only ever been tested against a stub proc
 | L6 | No-egress guarantee | a test asserts **zero outbound sockets** during a local analysis. This is a headline product claim — it gets a test, not a paragraph | L1–L4 |
 | L7 | `pvl analyze <file>` CLI | one command, no server, writes annotated video + report + db row | L2–L4 |
 | L8 | Route-parity test | both modes expose the same route set minus the documented exclusions (billing/quota/admin local, youtube managed) | L1 |
-| L9 | One-command start | `docker compose up` **or** `pvl serve` gets a stranger from clone to a working localhost app; README verified by following it on a clean machine | L1–L5 |
+| L9 | One-command start | 🟡 **partial 2026-09-26.** `bash scripts/dev-local.sh` starts API + frontend, waits for health, stops both on Ctrl-C, and refuses with the fix when a port is taken or deps are missing. Documented in `GETTING_STARTED.md` §2a. Still to do: `docker compose`, a `pvl serve` entrypoint, and a clean-machine run by someone who has not seen the repo | L1–L5 |
 
 ## Epic I — Ingest 🟢
 
@@ -122,7 +122,7 @@ Per `docs/UI_COMPONENTS.md`. Reuses `DESIGN.md` tokens; no new design system.
 | id | Item | Done when |
 |---|---|---|
 | P1 | CI on push | offline pytest + `web` build run on push; the stale `.github/workflows` fixed |
-| P2 | Local-mode docs | `docs/GETTING_STARTED.md` covers the local path, including the `sm_120` trap verbatim so it is searchable |
+| P2 | Local-mode docs | 🟡 **partial 2026-09-26.** `GETTING_STARTED.md` §2a covers the local path, what works vs not, and troubleshooting. Still to do: the `sm_120` torch trap verbatim, once M0-1 proves the fix |
 | P3 | Stat export | JSON/CSV out of SQLite; the local answer to PBQL |
 | P4 | DUPR/VAIR-compatible export | stat feed export without sending video anywhere |
 | P5 | Trend view | multiple sessions for a self-declared player. **No face matching** (PRD §4) |
